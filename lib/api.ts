@@ -2,15 +2,27 @@ import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 
-const postsDirectory = join(process.cwd(), '_posts')
+const POST = '_posts'
+const postsDirectory = join(process.cwd(), POST)
 
-export function getPostSlugs() {
-  return fs.readdirSync(postsDirectory)
+export function getPostSlugs(directory) {
+  let files = fs.readdirSync(directory)
+
+  return files.reduce((acc: string[], file: string) => {
+    const path = directory + "/" + file
+
+    if(file.endsWith(".md")) {
+      return [...acc, path]
+    } else {
+      return [...acc, ...getPostSlugs(path)]
+    }
+  }, [])
 }
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
   const fullPath = join(postsDirectory, `${realSlug}.md`)
+  console.log("realSlug & fullPath:", realSlug, fullPath)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
 
@@ -38,7 +50,10 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  const slugs = getPostSlugs()
+  const slugs = getPostSlugs(postsDirectory).map((file: string) => file.split("/" + POST + "/")[1])
+  /* slugs: [ 'dynamic-routing.md', 'hello-world.md', 'preview.md' ] */
+  console.log("slugs: ", slugs)
+
   const posts = slugs
     .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
