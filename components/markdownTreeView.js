@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TreeView } from './TreeView.tsx';
-import { POST } from "@/lib/api"
+import { POST, SIDEBAR_POST } from "@/constant/project";
 
 const treeViewConverter = (entry) => {
   return entry
@@ -11,7 +11,7 @@ const treeViewConverter = (entry) => {
           ...acc,
           {
             label: e.matter.title || p.split('/')[p.split('/').length - 1],
-            path: [POST, ...p.split('/')],
+            path: [SIDEBAR_POST, ...p.split('/')],
             type: 'file'
           }
         ];
@@ -22,13 +22,13 @@ const treeViewConverter = (entry) => {
         q.pop();
         const folder = {
           label: q[q.length - 1],
-          path: [POST, ...q],
+          path: [SIDEBAR_POST, ...q],
           type: 'folder'
         };
 
         const file = {
           label: e.matter.title || p.split('/')[p.split('/').length - 1],
-          path: [POST, ...p.split('/')],
+          path: [SIDEBAR_POST, ...p.split('/')],
           type: 'file'
         }
 
@@ -46,11 +46,12 @@ export default function MarkdownTreeView ({
   className,
   allDocsNestedData,
 }) {
+  console.log("allDocsNestedData:", allDocsNestedData)
   const [selected, setSelected] = useState();
   const formattedTree = [
     {
-      label: POST,
-      path: [POST]
+      label: SIDEBAR_POST,
+      path: [SIDEBAR_POST]
     },
     ...treeViewConverter(allDocsNestedData.files)
   ];

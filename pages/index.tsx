@@ -8,7 +8,7 @@ import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
 import Post from '../interfaces/post'
 
-import { POST } from "@/lib/api"
+import { POST } from "@/constant/project";
 import { getFolderNestedData } from "@/lib/nestedPath"
 
 type Props = {

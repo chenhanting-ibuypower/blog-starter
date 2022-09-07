@@ -1,8 +1,8 @@
 import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
+import { POST } from "@/constant/project";
 
-export const POST = '_posts'
 const postsDirectory = join(process.cwd(), POST)
 
 export function getPostSlugs(directory) {

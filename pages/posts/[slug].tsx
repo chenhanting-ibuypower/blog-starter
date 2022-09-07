@@ -5,13 +5,14 @@ import PostBody from '../../components/post-body'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
-import {getPostBySlug, getAllPosts, POST} from '../../lib/api'
+import { getPostBySlug, getAllPosts } from '../../lib/api'
 import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import markdownToHtml from '../../lib/markdownToHtml'
 import type PostType from '../../interfaces/post'
 import {getFolderNestedData} from "@/lib/nestedPath";
+import { POST } from "@/constant/project";
 
 type Props = {
   post: PostType
@@ -22,6 +23,8 @@ type Props = {
 
 export default function Post({ post, morePosts, preview, allDocsNestedData }: Props) {
   const router = useRouter()
+  console.log("allDocsNestedData [slug]:", allDocsNestedData)
+
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
   }
@@ -80,8 +83,8 @@ export async function getStaticProps({ params }: Params) {
       post: {
         ...post,
         content,
-        allDocsNestedData
       },
+      allDocsNestedData
     },
   }
 }
