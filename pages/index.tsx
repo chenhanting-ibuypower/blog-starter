@@ -8,16 +8,20 @@ import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
 import Post from '../interfaces/post'
 
+import { POST } from "@/lib/api"
+import { getFolderNestedData } from "@/lib/nestedPath"
+
 type Props = {
   allPosts: Post[]
+  allDocsNestedData: any
 }
 
-export default function Index({ allPosts }: Props) {
+export default function Index({ allPosts, allDocsNestedData }: Props) {
   const heroPost = allPosts[0]
   const morePosts = allPosts.slice(1)
   return (
     <>
-      <Layout>
+      <Layout allDocsNestedData={allDocsNestedData}>
         <Head>
           <title>Next.js Blog Example with {CMS_NAME}</title>
         </Head>
@@ -41,6 +45,8 @@ export default function Index({ allPosts }: Props) {
 }
 
 export const getStaticProps = async () => {
+  const allDocsNestedData = await getFolderNestedData(POST);
+
   const allPosts = getAllPosts([
     'title',
     'date',
@@ -51,6 +57,6 @@ export const getStaticProps = async () => {
   ])
 
   return {
-    props: { allPosts },
+    props: { allPosts, allDocsNestedData },
   }
 }

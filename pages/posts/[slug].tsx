@@ -5,26 +5,28 @@ import PostBody from '../../components/post-body'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
-import { getPostBySlug, getAllPosts } from '../../lib/api'
+import {getPostBySlug, getAllPosts, POST} from '../../lib/api'
 import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import markdownToHtml from '../../lib/markdownToHtml'
 import type PostType from '../../interfaces/post'
+import {getFolderNestedData} from "@/lib/nestedPath";
 
 type Props = {
   post: PostType
   morePosts: PostType[]
   preview?: boolean
+  allDocsNestedData: any
 }
 
-export default function Post({ post, morePosts, preview }: Props) {
+export default function Post({ post, morePosts, preview, allDocsNestedData }: Props) {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
   }
   return (
-    <Layout preview={preview}>
+    <Layout preview={preview} allDocsNestedData={allDocsNestedData}>
       <Container>
         <Header />
         {router.isFallback ? (
@@ -60,6 +62,8 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
+  const allDocsNestedData = await getFolderNestedData(POST);
+
   const post = getPostBySlug(params.slug, [
     'title',
     'date',
@@ -76,6 +80,7 @@ export async function getStaticProps({ params }: Params) {
       post: {
         ...post,
         content,
+        allDocsNestedData
       },
     },
   }
