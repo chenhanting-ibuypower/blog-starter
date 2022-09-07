@@ -11,8 +11,6 @@ type Props = {
 }
 
 const Layout = ({ preview, children, allDocsNestedData }: Props) => {
-    console.log("allDocsNestedData (Layout):", allDocsNestedData)
-
   return (
     <>
       <Meta />
