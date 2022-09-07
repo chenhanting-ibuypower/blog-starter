@@ -23,11 +23,14 @@ type Props = {
 
 export default function Post({ post, morePosts, preview, allDocsNestedData }: Props) {
   const router = useRouter()
-  console.log("allDocsNestedData [slug]:", allDocsNestedData)
 
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
   }
+
+  console.log("post:", post)
+
+
   return (
     <Layout preview={preview} allDocsNestedData={allDocsNestedData}>
       <Container>
@@ -41,13 +44,13 @@ export default function Post({ post, morePosts, preview, allDocsNestedData }: Pr
                 <title>
                   {post.title} | Next.js Blog Example with {CMS_NAME}
                 </title>
-                <meta property="og:image" content={post.ogImage.url} />
+                <meta property="og:image" content={post.ogImage?.url} />
               </Head>
               <PostHeader
                 title={post.title}
                 coverImage={post.coverImage}
                 date={post.date}
-                author={post.author}
+                author={post?.author}
               />
               <PostBody content={post.content} />
             </article>
@@ -60,14 +63,14 @@ export default function Post({ post, morePosts, preview, allDocsNestedData }: Pr
 
 type Params = {
   params: {
-    slug: string
+    slug: string[]
   }
 }
 
 export async function getStaticProps({ params }: Params) {
   const allDocsNestedData = await getFolderNestedData(POST);
 
-  const post = getPostBySlug(params.slug, [
+  const post = getPostBySlug(params.slug.join("/"), [
     'title',
     'date',
     'slug',
@@ -97,7 +100,7 @@ export async function getStaticPaths() {
     paths: posts.map((post) => {
       return {
         params: {
-          slug: post.slug,
+          slug: post.slug.split("/"),
         },
       }
     }),
